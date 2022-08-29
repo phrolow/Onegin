@@ -1,32 +1,28 @@
 #include "onegin.h"
 
 int main(int argc, char *argv[]) {            //когда нибудь я запилю аргументы
+
     struct text originalText = { NULL, 0 },
                 sortedFromStartText = { NULL, 0 },
                 sortedFromEndText = { NULL, 0 };
 
-    FILE        *originalFile = NULL,
-                *finalFile = NULL;
-
     argv[1] = "file1.txt";
     argv[2] = "file2.txt";
 
-    originalFile   = fopen(argv[1], "r");
-    finalFile      = fopen(argv[2], "a");
+    originalText = textFromFile(argv[1]);
+    sortedFromStartText = textFromFile(argv[1]);
+    sortedFromEndText = textFromFile(argv[1]);
 
-    originalText = textFromFile(originalFile);
-    //sortedFromStartText = textFromFile(originalFile);
-    //sortedFromEndText = textFromFile(originalFile);
+    sortFromStart(sortedFromStartText);
+    sortFromEnd(sortedFromEndText);
 
-    //sortFromStart(sortedFromStartText);
-    //sortFromEnd(sortedFromEndText);
+    appendText(sortedFromStartText, argv[2]);
+    appendText(sortedFromEndText, argv[2]);
+    appendText(originalText, argv[2]);
 
-    //appendText(sortedFromStartText, finalFile);
-    //appendText(sortedFromEndText, finalFile);
-    appendText(originalText, finalFile);
-
-    fclose(originalFile);
-    fclose(finalFile);
+    printf("%d\n", compEnd("Aboba", "Abobus"));
+    printf("%d\n", compEnd("Aboba", "Aboba"));
+    printf("%d\n", compEnd("Aboba", "Abobaa"));
 
     return 0;
 }
