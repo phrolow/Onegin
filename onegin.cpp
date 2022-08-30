@@ -1,6 +1,6 @@
 #include "onegin.h"
 
-struct text maketext(str *content, size_t nLine) {//работает как часы
+struct text maketext(str *content, size_t nLine) {
     struct text newText = { NULL, 0 };
 
     newText.content = content;
@@ -9,13 +9,12 @@ struct text maketext(str *content, size_t nLine) {//работает как часы
     return newText;
 }
 
-struct text textFromFile(char *path) {         //норм работает
+struct text textFromFile(char *path) {
     assert(path);
 
     FILE *fp = NULL;
     size_t  nLine = 0,
             i = 0;
-    //str content[MAXSIZE] = {};
     str *content = NULL;
     char *buffer = NULL;
 
@@ -37,7 +36,7 @@ struct text textFromFile(char *path) {         //норм работает
     return maketext(content, nLine);
 }
 
-void sortFromStart(struct text sortableText) {
+void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {
     assert(sortableText.content);
     assert(sortableText.nLine != 0);
 
@@ -45,13 +44,11 @@ void sortFromStart(struct text sortableText) {
            j = 0;
     char* temp = NULL;
 
-    //qsort(sortableText.content, sortableText.nLine, sizeof(char *), (int(*) (const void *, const void *)) compStart);
-
     for (i = 0; i < sortableText.nLine - 1; i++)
     {
         for (j = 0; j < sortableText.nLine - i - 1; j++)
         {
-            if (strcmp(sortableText.content[j + 1], sortableText.content[j]) < 0)
+            if (comp(sortableText.content[j + 1], sortableText.content[j]) < 0)
             {
                 temp = sortableText.content[j];
                 sortableText.content[j] = sortableText.content[j + 1];
@@ -59,13 +56,6 @@ void sortFromStart(struct text sortableText) {
             }
         }
     }
-}
-
-void sortFromEnd(struct text sortableText) {
-    assert(sortableText.content);
-    assert(sortableText.nLine != 0);
-
-    qsort(sortableText.content, sortableText.nLine, sizeof(char *), (int(*) (const void *, const void *)) compEnd);
 }
 
 void appendText(struct text appendableText, char *path) {
@@ -86,19 +76,6 @@ void appendText(struct text appendableText, char *path) {
     fclose(fp);
 }
 
-int compStart(const char* str1, const char* str2) {
-    int i = 0;
-
-    while(str1[i] == str2[i]) {
-        if(str1[i] == '\0')
-            return 0;
-
-        i++;
-    }
-
-    return str2[i] - str1[i];
-}
-
 int compEnd(const char* str1, const char* str2) {
     int i1 = 0,
         i2 = 0;
@@ -112,7 +89,7 @@ int compEnd(const char* str1, const char* str2) {
     }
 
     if(!(i1 + 1 || i2 + 1))
-        return i2 - i1;
+        return i1 - i2;
 
-    return str2[i2] - str1[i1];
+    return str1[i1] - str2[i2];
 }

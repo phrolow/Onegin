@@ -37,6 +37,8 @@ struct text maketext(str *content, size_t nLine);
 
 struct text textFromFile(char *path);
 
+void sortText(struct text sortableText, int(*comp) (const char *, const char*));
+
 //! @brief  Sort text
 //!
 //! @param  sortableText    Sortable text

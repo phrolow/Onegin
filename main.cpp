@@ -13,8 +13,8 @@ int main(int argc, char *argv[]) {            //когда нибудь я запилю аргументы
     sortedFromStartText = textFromFile(argv[1]);
     sortedFromEndText = textFromFile(argv[1]);
 
-    sortFromStart(sortedFromStartText);
-    sortFromEnd(sortedFromEndText);
+    sortText(sortedFromStartText, strcmp);
+    sortText(sortedFromEndText, compEnd);
 
     appendText(sortedFromStartText, argv[2]);
     appendText(sortedFromEndText, argv[2]);
