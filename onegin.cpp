@@ -43,8 +43,22 @@ void sortFromStart(struct text sortableText) {
 
     size_t i = 0,
            j = 0;
+    char* temp = NULL;
 
-    qsort(sortableText.content, sortableText.nLine, sizeof(char *), (int(*) (const void *, const void *)) compStart);
+    //qsort(sortableText.content, sortableText.nLine, sizeof(char *), (int(*) (const void *, const void *)) compStart);
+
+    for (i = 0; i < sortableText.nLine - 1; i++)
+    {
+        for (j = 0; j < sortableText.nLine - i - 1; j++)
+        {
+            if (strcmp(sortableText.content[j + 1], sortableText.content[j]) < 0)
+            {
+                temp = sortableText.content[j];
+                sortableText.content[j] = sortableText.content[j + 1];
+                sortableText.content[j + 1] = temp;
+            }
+        }
+    }
 }
 
 void sortFromEnd(struct text sortableText) {

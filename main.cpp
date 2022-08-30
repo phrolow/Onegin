@@ -20,9 +20,5 @@ int main(int argc, char *argv[]) {            //когда нибудь я запилю аргументы
     appendText(sortedFromEndText, argv[2]);
     appendText(originalText, argv[2]);
 
-    printf("%d\n", compEnd("Aboba", "Abobus"));
-    printf("%d\n", compEnd("Aboba", "Aboba"));
-    printf("%d\n", compEnd("Aboba", "Abobaa"));
-
     return 0;
 }
