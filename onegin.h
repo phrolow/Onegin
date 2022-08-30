@@ -8,9 +8,13 @@
 #include <stdlib.h>
 #include <TXLib.h>
 
-const int MAXSIZE = 5000,
-          MAXLINE = 1000;
+//! @brief  Max lines in text
 
+const int MAXSIZE = 5000;
+
+//! @brief  Max chars in line
+
+const int MAXLINE = 1000;
 
 typedef char* str;
 
@@ -37,19 +41,13 @@ struct text maketext(str *content, size_t nLine);
 
 struct text textFromFile(char *path);
 
+//! @brief  Sort text
+//!
+//! @param  sortableText    Sortable text
+//!
+//! @param  comp            Function to compare for sort
+
 void sortText(struct text sortableText, int(*comp) (const char *, const char*));
-
-//! @brief  Sort text
-//!
-//! @param  sortableText    Sortable text
-
-void sortFromStart(struct text sortableText);
-
-//! @brief  Sort text
-//!
-//! @param  sortableText    Sortable text
-
-void sortFromEnd(struct text sortableText);
 
 //! @brief  Append text
 //!
@@ -58,7 +56,13 @@ void sortFromEnd(struct text sortableText);
 
 void appendText(struct text appendableText, char *path);
 
-int compStart(const char* str1, const char* str2);
+//! @brief  Compare two strings from end
+//!
+//! @param  str1    Fisrt string
+//!
+//! @param  str2    Second string
+//!
+//! @return Negative if the mirrored first string is lexicographically greater than the mirrored second, zero if the strings are equal, positive if the mirrored first string is lexicographically less than the mirrored second
 
 int compEnd(const char* str1, const char* str2);
 #endif

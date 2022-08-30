@@ -77,6 +77,9 @@ void appendText(struct text appendableText, char *path) {
 }
 
 int compEnd(const char* str1, const char* str2) {
+    assert(str1 && str2);
+    assert(str1 != str2);
+
     int i1 = 0,
         i2 = 0;
 
