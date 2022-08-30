@@ -1,6 +1,6 @@
 #include "onegin.h"
 
-int main(int argc, char *argv[]) {            //когда нибудь я запилю аргументы
+int main(int argc, char *argv[]) {            //СЏ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ СЃРґРµР»Р°СЋ Р°СЂРіСѓРјРµРЅС‚С‹
 
     struct text originalText = { NULL, 0 },
                 sortedFromStartText = { NULL, 0 },
