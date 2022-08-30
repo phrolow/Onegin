@@ -1,26 +1,6 @@
 # Onegin
-заключается она в том, что необходимо взять
-большой текст
-каокй-то
-бери сперва на английском
-все берут гамлета шекспира
-задача
-необходимо
-отсортировать текст таким образом
-из 1 файла читается исходный текст
-во втрой файл
-отсортированный текст, по строкам в алфавитном порядке
-афцвоо
-бювфцбвбц
-ввцфвцфв 
-ниже в этом же файле
-отсортированный по строкам но с конца
-вфцвфцвфаАА
-вофцоцвооБББ
-вофцовоцвоВВВ
-и ниже
-оригинальный текст
-в выходном файле по сути 3 текста
 
-нужно будет создать структру текста
-и в ней хранить необходимые вещи
+The program takes the text from the file (the first argument). The second file (second argument) is written first with the text sorted from the beginning of each line, then the same text sorted from the end of the line, then the original text
+
+Authors:
+ - Vasily Frolov
