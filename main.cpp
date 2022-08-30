@@ -1,13 +1,14 @@
 #include "onegin.h"
 
-int main(int argc, char *argv[]) {            //когда нибудь я запилю аргументы
+int main(int argc, char *argv[]) {
+    if(argc == 2) {
+        printf("Too few arguments!");
+        exit(0);
+    }
 
     struct text originalText = { NULL, 0 },
                 sortedFromStartText = { NULL, 0 },
                 sortedFromEndText = { NULL, 0 };
-
-    argv[1] = "file1.txt";
-    argv[2] = "file2.txt";
 
     originalText = textFromFile(argv[1]);
     sortedFromStartText = textFromFile(argv[1]);

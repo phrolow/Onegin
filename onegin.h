@@ -1,6 +1,5 @@
 #ifndef ONEGIN
 #define ONEGIN
-//#define TEST
 
 #include <assert.h>
 #include <stdio.h>
