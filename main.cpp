@@ -1,7 +1,7 @@
 #include "onegin.h"
 
 int main(int argc, char *argv[]) {
-    if(argc == 2) {
+    if(argc < 3) {
         printf("Too few arguments!");
         exit(0);
     }
@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
     sortedFromStartText = textFromFile(argv[1]);
     sortedFromEndText = textFromFile(argv[1]);
 
-    sortText(sortedFromStartText, strcmp);
-    sortText(sortedFromEndText, compEnd);
+    //sortText(sortedFromStartText, strcmp);
+    //sortText(sortedFromEndText, compEnd);
 
     appendText(sortedFromStartText, argv[2]);
     appendText(sortedFromEndText, argv[2]);

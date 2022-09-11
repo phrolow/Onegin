@@ -5,15 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include <TXLib.h>
 
-//! @brief  Max lines in text
-
-const int MAXSIZE = 5000;
-
-//! @brief  Max chars in line
-
-const int MAXLINE = 1000;
+//! @brief  String type
 
 typedef char* str;
 
@@ -64,4 +59,20 @@ void appendText(struct text appendableText, char *path);
 //! @return Negative if the mirrored first string is lexicographically greater than the mirrored second, zero if the strings are equal, positive if the mirrored first string is lexicographically less than the mirrored second
 
 int compEnd(const char* str1, const char* str2);
+
+//! @brief  Modified strlen
+//!
+//! @param  str     String
+//!
+//! @return Length of string without spaces in the begin of string
+
+size_t ostrlen(const char* str);
+
+//! @brief  Modified strcpy
+//!
+//! @param  str     String
+//!
+//! @return Length of string without spaces in the begin of string
+
+char* ostrcpy(char* str1, const char* str2);
 #endif

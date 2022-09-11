@@ -13,22 +13,58 @@ struct text textFromFile(char *path) {
     assert(path);
 
     FILE *fp = NULL;
-    size_t  nLine = 0,
-            i = 0;
-    str *content = NULL;
+    size_t  currentLine = 0,
+            maxLine = 0,
+            nLine = 0;
+    str *content = NULL;         //wsl valgrind
     char *buffer = NULL;
+    int c = 0,
+        flag = 0;                //да здравствует уебищная реализация чека на пустую строку через флаг
+    unsigned i = 0,
+             j = 0;
 
     fp = fopen(path, "r");
 
-    content = (str*)calloc(MAXSIZE + 1, sizeof(str));
-    buffer = (char*)calloc(MAXLINE + 1, sizeof(char));
+    while((c = getc(fp)) != EOF) {
+        currentLine++;
 
-    for(i = 0; fgets(buffer, MAXLINE, fp) != NULL; i++) {
-        nLine++;
+        if(c != ' ' && c != '\t')
+            flag = 1;
 
-        content[i] = (char*)calloc(strlen(buffer) + 1, sizeof(char));
+        if(c == '\n') {
+            if(flag)
+                nLine++;
 
-        strcpy(content[i], buffer);
+            if(currentLine > maxLine)
+                maxLine = currentLine;
+
+            currentLine = 0;
+
+            flag = 0;
+        }
+    }
+
+    nLine++;
+
+    fclose(fp);
+
+    fp = fopen(path, "r");
+
+    content = (str*)calloc(nLine + 1, sizeof(str));
+    buffer = (char*)calloc(maxLine + 1, sizeof(char));
+
+    for(i = 0; i < nLine; i++) {
+        fgets(buffer, maxLine + 1, fp);
+
+        for(j = 0; (buffer[j] == ' ' || buffer[j] == '\t') && buffer[j] != '\0'; j++)
+            ;
+
+        if(j - 1 == strlen(buffer))
+            continue;
+
+        content[i] = (char*)calloc(strlen(buffer) + 1 - j, sizeof(char));
+
+        strcpy(content[i], buffer + j);
     }
 
     fclose(fp);
@@ -36,7 +72,7 @@ struct text textFromFile(char *path) {
     return maketext(content, nLine);
 }
 
-void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {
+void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
     assert(sortableText.content);
     assert(sortableText.nLine != 0);
 
@@ -58,7 +94,7 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*)) 
     }
 }
 
-void appendText(struct text appendableText, char *path) {
+void appendText(struct text appendableText, char *path) {                          // \r
     assert(path && appendableText.content);
     assert(appendableText.nLine != 0);
 
