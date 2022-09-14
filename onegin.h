@@ -5,18 +5,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys\stat.h>
 
 #include <TXLib.h>
 
 //! @brief  String type
 
-typedef char* str;
-
-//! @brief  Text
-
 struct text {
-    str *content;
-    size_t nLine;
+    char *content;
+    char **ptrs;
+    size_t  nChar,
+            nLine,
+            maxLine;
 };
 
 //! @brief  Text constructor
@@ -25,7 +25,7 @@ struct text {
 //!
 //! @return New struct text
 
-struct text maketext(str *content, size_t nLine);
+struct text maketext(char *content, char** ptrs, size_t nChar, size_t nLine, size_t maxLine);
 
 //! @brief  Get text from file
 //!
@@ -59,20 +59,4 @@ void appendText(struct text appendableText, char *path);
 //! @return Negative if the mirrored first string is lexicographically greater than the mirrored second, zero if the strings are equal, positive if the mirrored first string is lexicographically less than the mirrored second
 
 int compEnd(const char* str1, const char* str2);
-
-//! @brief  Modified strlen
-//!
-//! @param  str     String
-//!
-//! @return Length of string without spaces in the begin of string
-
-size_t ostrlen(const char* str);
-
-//! @brief  Modified strcpy
-//!
-//! @param  str     String
-//!
-//! @return Length of string without spaces in the begin of string
-
-char* ostrcpy(char* str1, const char* str2);
 #endif

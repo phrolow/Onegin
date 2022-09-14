@@ -1,10 +1,13 @@
 #include "onegin.h"
 
-struct text maketext(str *content, size_t nLine) {
-    struct text newText = { NULL, 0 };
+struct text maketext(char *content, char **ptrs, size_t nChar, size_t nLine, size_t maxLine) {
+    struct text newText = { NULL, NULL, 0 };
 
     newText.content = content;
+    newText.ptrs = ptrs;
+    newText.nChar = nChar;
     newText.nLine = nLine;
+    newText.maxLine = maxLine;
 
     return newText;
 }
@@ -14,65 +17,60 @@ struct text textFromFile(char *path) {
 
     FILE *fp = NULL;
     size_t  currentLine = 0,
-            maxLine = 0,
-            nLine = 0;
-    str *content = NULL;         //wsl valgrind
-    char *buffer = NULL;
-    int c = 0,
-        flag = 0;                //да здравствует уебищная реализация чека на пустую строку через флаг
-    unsigned i = 0,
-             j = 0;
+            i = 0,
+            iLine = 0,
+            nChar = 0,
+            nLine = 0,
+            maxLine = 0;
+    char **ptrs = NULL;         //wsl valgrind
+    char *content = NULL;
+    struct stat stats;
 
     fp = fopen(path, "r");
 
-    while((c = getc(fp)) != EOF) {
+    fstat(fileno(fp), &stats);
+
+    nChar = stats.st_size / sizeof(char);
+
+    content = (char*)calloc(sizeof(char), nChar + 1);
+    fread(content, sizeof(char), nChar, fp);
+
+    fclose(fp);
+
+    for(i = 0; i < nChar; i++)
+        if(content[i] == '\n')
+            nLine++;
+
+    nLine++;
+
+    content[i + 1] = '\0';
+
+    ptrs = (char**)calloc(sizeof(char*), nLine + 1);
+
+    *(ptrs) = &(content[0]);
+    iLine++;
+
+    for(i = 0; i < nChar; i++) {
         currentLine++;
 
-        if(c != ' ' && c != '\t')
-            flag = 1;
+        if(content[i] == '\n') {
+            *(ptrs + iLine) = &(content[i + 1]);
 
-        if(c == '\n') {
-            if(flag)
-                nLine++;
+            iLine++;
 
             if(currentLine > maxLine)
                 maxLine = currentLine;
 
             currentLine = 0;
-
-            flag = 0;
         }
     }
 
-    nLine++;
+    printf("New text!\n%u chars\n%u lines\n%u max line\n", nChar, nLine, maxLine);
 
-    fclose(fp);
-
-    fp = fopen(path, "r");
-
-    content = (str*)calloc(nLine + 1, sizeof(str));
-    buffer = (char*)calloc(maxLine + 1, sizeof(char));
-
-    for(i = 0; i < nLine; i++) {
-        fgets(buffer, maxLine + 1, fp);
-
-        for(j = 0; (buffer[j] == ' ' || buffer[j] == '\t') && buffer[j] != '\0'; j++)
-            ;
-
-        if(j - 1 == strlen(buffer))
-            continue;
-
-        content[i] = (char*)calloc(strlen(buffer) + 1 - j, sizeof(char));
-
-        strcpy(content[i], buffer + j);
-    }
-
-    fclose(fp);
-
-    return maketext(content, nLine);
+    return maketext(content, ptrs, nChar, nLine, maxLine);
 }
 
-void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
+/* void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
     assert(sortableText.content);
     assert(sortableText.nLine != 0);
 
@@ -92,24 +90,35 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*)) 
             }
         }
     }
-}
+}      */
 
 void appendText(struct text appendableText, char *path) {                          // \r
     assert(path && appendableText.content);
     assert(appendableText.nLine != 0);
 
     FILE *fp = NULL;
-    size_t i = 0;
+    size_t  i = 0,
+            j = 0;
+    char *buff = NULL;
+
+    buff = (char*)calloc(appendableText.maxLine + 1, sizeof(char));
 
     fp = fopen(path, "a");
 
     for(i = 0; i < appendableText.nLine; i++) {
-        fputs(appendableText.content[i], fp);
+        for(j = 0; appendableText.ptrs[i][j] != '\n'; j++) {
+            printf("%c", appendableText.ptrs[i][j]);
+            buff[j] = appendableText.ptrs[i][j];
+        }
+
+        buff[j] = '\0';
+
+        fputs(buff, fp);
     }
 
-    fputs("\n", fp);
-
     fclose(fp);
+
+    free(buff);
 }
 
 int compEnd(const char* str1, const char* str2) {
