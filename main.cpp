@@ -6,20 +6,21 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    struct text originalText = { NULL, 0 },
-                sortedFromStartText = { NULL, 0 },
-                sortedFromEndText = { NULL, 0 };
+    struct text originalText = { NULL, NULL, 0, 0, 0 },
+                sortedFromStartText = { NULL, NULL, 0, 0, 0 },
+                sortedFromEndText = { NULL, NULL, 0, 0, 0 };
 
     originalText = textFromFile(argv[1]);
     sortedFromStartText = textFromFile(argv[1]);
     sortedFromEndText = textFromFile(argv[1]);
 
+    qsort(sortedFromStartText.ptrs, sortedFromStartText.nLine, sizeof(char*), (int (*)(const void*, const void*)) compStart);
     //sortText(sortedFromStartText, strcmp);
     //sortText(sortedFromEndText, compEnd);
 
     appendText(sortedFromStartText, argv[2]);
     appendText(sortedFromEndText, argv[2]);
-    appendText(originalText, argv[2]);
+    appendContent(originalText.content, argv[2]);
 
     return 0;
 }

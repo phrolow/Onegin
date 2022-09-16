@@ -48,7 +48,11 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*));
 //! @param[in]      appendableText      Sortable text
 //! @param[out]     stream              Output stream
 
-void appendText(struct text appendableText, char *path);
+void appendText(struct text appendableText, char* path);
+
+void appendContent(const char* content, char* path);
+
+int compStart(const char* ptr1, const char* ptr2);
 
 //! @brief  Compare two strings from end
 //!
@@ -58,5 +62,5 @@ void appendText(struct text appendableText, char *path);
 //!
 //! @return Negative if the mirrored first string is lexicographically greater than the mirrored second, zero if the strings are equal, positive if the mirrored first string is lexicographically less than the mirrored second
 
-int compEnd(const char* str1, const char* str2);
+int compEnd(const char* ptr1, const char* ptr2);
 #endif

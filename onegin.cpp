@@ -1,7 +1,7 @@
 #include "onegin.h"
 
 struct text maketext(char *content, char **ptrs, size_t nChar, size_t nLine, size_t maxLine) {
-    struct text newText = { NULL, NULL, 0 };
+    struct text newText = { NULL, NULL, 0, 0, 0 };
 
     newText.content = content;
     newText.ptrs = ptrs;
@@ -32,7 +32,7 @@ struct text textFromFile(char *path) {
 
     nChar = stats.st_size / sizeof(char);
 
-    content = (char*)calloc(sizeof(char), nChar + 1);
+    content = (char*)calloc(nChar + 1, sizeof(char));
     fread(content, sizeof(char), nChar, fp);
 
     fclose(fp);
@@ -45,16 +45,16 @@ struct text textFromFile(char *path) {
 
     content[i + 1] = '\0';
 
-    ptrs = (char**)calloc(sizeof(char*), nLine + 1);
+    ptrs = (char**)calloc(nLine + 1, sizeof(char*));
 
-    *(ptrs) = &(content[0]);
+    ptrs[0] = &(content[0]);
     iLine++;
 
     for(i = 0; i < nChar; i++) {
         currentLine++;
 
         if(content[i] == '\n') {
-            *(ptrs + iLine) = &(content[i + 1]);
+            ptrs[iLine] = &(content[i + 1]);
 
             iLine++;
 
@@ -64,8 +64,6 @@ struct text textFromFile(char *path) {
             currentLine = 0;
         }
     }
-
-    printf("New text!\n%u chars\n%u lines\n%u max line\n", nChar, nLine, maxLine);
 
     return maketext(content, ptrs, nChar, nLine, maxLine);
 }
@@ -101,43 +99,93 @@ void appendText(struct text appendableText, char *path) {                       
             j = 0;
     char *buff = NULL;
 
-    buff = (char*)calloc(appendableText.maxLine + 1, sizeof(char));
+    buff = (char*)calloc(appendableText.maxLine + 3, sizeof(char));
 
     fp = fopen(path, "a");
 
     for(i = 0; i < appendableText.nLine; i++) {
-        for(j = 0; appendableText.ptrs[i][j] != '\n'; j++) {
-            printf("%c", appendableText.ptrs[i][j]);
+        for(j = 0; appendableText.ptrs[i][j] != '\n' && appendableText.ptrs[i][j] != '\0'; j++) {
+
             buff[j] = appendableText.ptrs[i][j];
         }
 
-        buff[j] = '\0';
+        buff[j] = '\n';
+        buff[j + 1] = '\0';
 
-        fputs(buff, fp);
+        if(buff[0] != '\n')
+            fputs(buff, fp);
     }
+
+    fputs("\n", fp);
 
     fclose(fp);
 
     free(buff);
 }
 
+void appendContent(const char* content, char *path) {
+    assert(content);
+
+    FILE *fp = NULL;
+
+    fp = fopen(path, "a");
+
+    fputs(content, fp);
+
+    fclose(fp);
+}
+
+int compStart(const char* str1, const char* str2) {
+    assert(str1 && str2);
+    assert(str1 != str2);
+
+    const char *ptr1 = *(char**)str1;
+    const char *ptr2 = *(char**)str2;
+
+    char c1, c2;
+
+    while(!isalpha(*ptr1) && *ptr1 != '\n' && *ptr1 != '\0')
+        ptr1++;
+
+    while(!isalpha(*ptr2) && *ptr1 != '\n' && *ptr1 != '\0')
+        ptr2++;
+
+    do {
+        c1 = *(ptr1++);
+        c2 = *(ptr2++);
+
+        if(c1 == '\0' || c1 == '\n') {
+            return c1 - c2;
+        }
+    }
+    while(c1 == c2);
+
+    return c1 - c2;
+}
+
 int compEnd(const char* str1, const char* str2) {
     assert(str1 && str2);
     assert(str1 != str2);
 
+    const char *ptr1 = *(char**)str1;
+    const char *ptr2 = *(char**)str2;
+
     int i1 = 0,
         i2 = 0;
 
-    i1 = strlen(str1) - 1;
-    i2 = strlen(str2) - 1;
+    i1 = strlen(ptr1) - 1;
+    i2 = strlen(ptr2) - 1;
 
-    while(str1[i1] == str2[i2] && i1 >= 0 && i2 >= 0) {
+    while(!isalpha(ptr1[i1]) && i1 > 0)
+        i1--;
+
+    while(!isalpha(ptr1[i2]) && i2 > 0)
+        i2--;
+
+    while(ptr1[i1] == ptr2[i2] && i1 > 0 && i2 > 0) {
         i1--;
         i2--;
     }
 
-    if(!(i1 + 1 || i2 + 1))
-        return i1 - i2;
-
-    return str1[i1] - str2[i2];
+    return ptr1[i1] - ptr2[i2];
 }
