@@ -6,6 +6,11 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
+    if(!(checkfile(argv[1]) && checkfile(argv[2]))) {
+        printf("Invalid arguments");
+        exit(0);
+    }
+
     struct text originalText = { NULL, NULL, 0, 0, 0 },
                 sortedFromStartText = { NULL, NULL, 0, 0, 0 },
                 sortedFromEndText = { NULL, NULL, 0, 0, 0 };
@@ -15,8 +20,7 @@ int main(int argc, char *argv[]) {
     sortedFromEndText = textFromFile(argv[1]);
 
     qsort(sortedFromStartText.ptrs, sortedFromStartText.nLine, sizeof(char*), (int (*)(const void*, const void*)) compStart);
-    qsort(sortedFromEndText.ptrs, sortedFromStartText.nLine, sizeof(char*), (int (*)(const void*, const void*)) compEnd);
-    //sortText(sortedFromEndText, compEnd);
+    sortText(sortedFromEndText, compEnd);
 
     appendText(sortedFromStartText, argv[2]);
     appendText(sortedFromEndText, argv[2]);

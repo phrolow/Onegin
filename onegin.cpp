@@ -12,7 +12,7 @@ struct text maketext(char *content, char **ptrs, size_t nChar, size_t nLine, siz
     return newText;
 }
 
-struct text textFromFile(char *path) {
+struct text textFromFile(const char *path) {
     assert(path);
 
     FILE *fp = NULL;
@@ -22,7 +22,7 @@ struct text textFromFile(char *path) {
             nChar = 0,
             nLine = 0,
             maxLine = 0;
-    char **ptrs = NULL;         //wsl valgrind
+    char **ptrs = NULL;
     char *content = NULL;
     struct stat stats;
 
@@ -68,7 +68,7 @@ struct text textFromFile(char *path) {
     return maketext(content, ptrs, nChar, nLine, maxLine);
 }
 
-void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
+void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {
     assert(sortableText.ptrs);
     assert(sortableText.nLine > 1);
 
@@ -76,13 +76,10 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*)) 
            j = 0;
     char* temp = NULL;
 
-    printf("%u\n", sortableText.nLine);
-
     for (i = 0; i < sortableText.nLine - 1; i++)
     {
         for (j = 0; j < sortableText.nLine - i - 1; j++)
         {
-            printf("%u ", j);
             if (comp(sortableText.ptrs[j], sortableText.ptrs[j + 1]) > 0)
             {
                 temp = sortableText.ptrs[j];
@@ -93,7 +90,7 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*)) 
     }
 }
 
-void appendText(struct text appendableText, char *path) {                          // \r
+void appendText(struct text appendableText, const char *path) {
     assert(path && appendableText.content);
     assert(appendableText.nLine != 0);
 
@@ -125,7 +122,7 @@ void appendText(struct text appendableText, char *path) {                       
     free(buff);
 }
 
-void appendContent(const char* content, char *path) {
+void appendContent(const char* content, const char *path) {
     assert(content);
 
     FILE *fp = NULL;
@@ -146,10 +143,10 @@ int compStart(const char* str1, const char* str2) {
 
     char c1, c2;
 
-    while(!isalpha(*ptr1) && *ptr1 != '\n' && *ptr1 != '\0')
+    while(*ptr1 != '\0' && *ptr1 != '\n' && !isalpha(*ptr1))
         ptr1++;
 
-    while(!isalpha(*ptr2) && *ptr1 != '\n' && *ptr1 != '\0')
+    while(*ptr1 != '\0' && *ptr1 != '\n' && !isalpha(*ptr2))
         ptr2++;
 
     do {
@@ -165,34 +162,12 @@ int compStart(const char* str1, const char* str2) {
     return c1 - c2;
 }
 
-int compEnd(const char* str1, const char* str2) {            //не стрлен
+int compEnd(const char* str1, const char* str2) {
     assert(str1 && str2);
     assert(str1 != str2);
 
-    /* const char *ptr1 = *(char**)str1;
-    const char *ptr2 = *(char**)str2;
-
-    int i1 = 0,
-        i2 = 0;
-
-    i1 = ostrlen(ptr1) - 1;
-    i2 = ostrlen(ptr2) - 1;
-
-    while(!isalpha(ptr1[i1]) && i1 > 0)
-        i1--;
-
-    while(!isalpha(ptr1[i2]) && i2 > 0)
-        i2--;
-
-    while(ptr1[i1] == ptr2[i2] && i1 > 0 && i2 > 0) {
-        i1--;
-        i2--;
-    }
-
-    return ptr1[i1] - ptr2[i2];    */
-
-    const char *ptr1 = *(char**)str1;
-    const char *ptr2 = *(char**)str2;
+    const char *ptr1 = str1;
+    const char *ptr2 = str2;
 
     while(*ptr1 != '\n' && *ptr1 != '\0')
         ptr1++;
@@ -212,7 +187,7 @@ int compEnd(const char* str1, const char* str2) {            //не стрлен
     return *ptr1 - *ptr2;
 }
 
-size_t ostrlen(const char *str) {
+size_t ostrlen(const char* str) {
     assert(str);
 
     size_t i = 0;
@@ -221,4 +196,21 @@ size_t ostrlen(const char *str) {
         i++;
 
     return i - 1;
+}
+
+int checkfile(const char* path) {
+    assert(path);
+
+    char* ptr = NULL;
+
+    ptr = strchr(path, '.');
+
+    if(ptr) {
+        ptr++;
+
+        if(strcmp(ptr, "txt") || strcmp(ptr, "docx") || strcmp(ptr, "doc") || strcmp(ptr, "rtf") || strcmp(ptr, "odt"))
+            return 1;
+    }
+
+    return 0;
 }

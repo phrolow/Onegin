@@ -2,12 +2,11 @@
 #define ONEGIN
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys\stat.h>
-
-#include <TXLib.h>
 
 //! @brief  String type
 
@@ -33,7 +32,7 @@ struct text maketext(char *content, char** ptrs, size_t nChar, size_t nLine, siz
 //!
 //! @return Struct text, which contains text from file
 
-struct text textFromFile(char *path);
+struct text textFromFile(const char *path);
 
 //! @brief  Sort text
 //!
@@ -48,9 +47,9 @@ void sortText(struct text sortableText, int(*comp) (const char *, const char*));
 //! @param[in]      appendableText      Sortable text
 //! @param[out]     stream              Output stream
 
-void appendText(struct text appendableText, char* path);
+void appendText(struct text appendableText, const char* path);
 
-void appendContent(const char* content, char* path);
+void appendContent(const char* content, const char* path);
 
 int compStart(const char* ptr1, const char* ptr2);
 
@@ -65,4 +64,6 @@ int compStart(const char* ptr1, const char* ptr2);
 int compEnd(const char* ptr1, const char* ptr2);
 
 size_t ostrlen(const char* ptr);
+
+int checkfile(const char* path);
 #endif
