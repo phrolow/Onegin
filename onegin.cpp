@@ -68,27 +68,30 @@ struct text textFromFile(char *path) {
     return maketext(content, ptrs, nChar, nLine, maxLine);
 }
 
-/* void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
-    assert(sortableText.content);
-    assert(sortableText.nLine != 0);
+void sortText(struct text sortableText, int(*comp) (const char *, const char*)) {      //хуевая сортировка потому что не учитывает пробелы
+    assert(sortableText.ptrs);
+    assert(sortableText.nLine > 1);
 
     size_t i = 0,
            j = 0;
     char* temp = NULL;
 
+    printf("%u\n", sortableText.nLine);
+
     for (i = 0; i < sortableText.nLine - 1; i++)
     {
         for (j = 0; j < sortableText.nLine - i - 1; j++)
         {
-            if (comp(sortableText.content[j + 1], sortableText.content[j]) < 0)
+            printf("%u ", j);
+            if (comp(sortableText.ptrs[j], sortableText.ptrs[j + 1]) > 0)
             {
-                temp = sortableText.content[j];
-                sortableText.content[j] = sortableText.content[j + 1];
-                sortableText.content[j + 1] = temp;
+                temp = sortableText.ptrs[j];
+                sortableText.ptrs[j] = sortableText.ptrs[j + 1];
+                sortableText.ptrs[j + 1] = temp;
             }
         }
     }
-}      */
+}
 
 void appendText(struct text appendableText, char *path) {                          // \r
     assert(path && appendableText.content);
@@ -105,7 +108,6 @@ void appendText(struct text appendableText, char *path) {                       
 
     for(i = 0; i < appendableText.nLine; i++) {
         for(j = 0; appendableText.ptrs[i][j] != '\n' && appendableText.ptrs[i][j] != '\0'; j++) {
-
             buff[j] = appendableText.ptrs[i][j];
         }
 
@@ -163,18 +165,18 @@ int compStart(const char* str1, const char* str2) {
     return c1 - c2;
 }
 
-int compEnd(const char* str1, const char* str2) {
+int compEnd(const char* str1, const char* str2) {            //не стрлен
     assert(str1 && str2);
     assert(str1 != str2);
 
-    const char *ptr1 = *(char**)str1;
+    /* const char *ptr1 = *(char**)str1;
     const char *ptr2 = *(char**)str2;
 
     int i1 = 0,
         i2 = 0;
 
-    i1 = strlen(ptr1) - 1;
-    i2 = strlen(ptr2) - 1;
+    i1 = ostrlen(ptr1) - 1;
+    i2 = ostrlen(ptr2) - 1;
 
     while(!isalpha(ptr1[i1]) && i1 > 0)
         i1--;
@@ -187,5 +189,36 @@ int compEnd(const char* str1, const char* str2) {
         i2--;
     }
 
-    return ptr1[i1] - ptr2[i2];
+    return ptr1[i1] - ptr2[i2];    */
+
+    const char *ptr1 = *(char**)str1;
+    const char *ptr2 = *(char**)str2;
+
+    while(*ptr1 != '\n' && *ptr1 != '\0')
+        ptr1++;
+
+    while(!isalpha(*ptr1) && ptr1 > str1)
+        ptr1--;
+
+    while(*ptr2 != '\n' && *ptr2 != '\0')
+        ptr2++;
+
+    while(!isalpha(*ptr2) && ptr2 > str2)
+        ptr2--;
+
+    while(*ptr1 == *ptr2 && --ptr1 > str1 && --ptr2 > str2)
+        ;
+
+    return *ptr1 - *ptr2;
+}
+
+size_t ostrlen(const char *str) {
+    assert(str);
+
+    size_t i = 0;
+
+    while(str[i] != '\0' && str[i] != '\n')
+        i++;
+
+    return i - 1;
 }

@@ -63,4 +63,6 @@ int compStart(const char* ptr1, const char* ptr2);
 //! @return Negative if the mirrored first string is lexicographically greater than the mirrored second, zero if the strings are equal, positive if the mirrored first string is lexicographically less than the mirrored second
 
 int compEnd(const char* ptr1, const char* ptr2);
+
+size_t ostrlen(const char* ptr);
 #endif

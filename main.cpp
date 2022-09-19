@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     sortedFromEndText = textFromFile(argv[1]);
 
     qsort(sortedFromStartText.ptrs, sortedFromStartText.nLine, sizeof(char*), (int (*)(const void*, const void*)) compStart);
-    //sortText(sortedFromStartText, strcmp);
+    qsort(sortedFromEndText.ptrs, sortedFromStartText.nLine, sizeof(char*), (int (*)(const void*, const void*)) compEnd);
     //sortText(sortedFromEndText, compEnd);
 
     appendText(sortedFromStartText, argv[2]);
