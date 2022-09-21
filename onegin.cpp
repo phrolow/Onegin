@@ -33,9 +33,12 @@ struct text textFromFile(const char *path) {
     nChar = stats.st_size / sizeof(char);
 
     content = (char*)calloc(nChar + 1, sizeof(char));
-    fread(content, sizeof(char), nChar, fp);
+
+    nChar = fread(content, sizeof(char), nChar, fp);
 
     fclose(fp);
+
+    content = (char*)realloc(content, nChar + 1);
 
     for(i = 0; i < nChar; i++)
         if(content[i] == '\n')
@@ -98,20 +101,26 @@ void appendText(struct text appendableText, const char *path) {
     size_t  i = 0,
             j = 0;
     char *buff = NULL;
+    int strContainsAlpha = 0;
 
     buff = (char*)calloc(appendableText.maxLine + 3, sizeof(char));
 
     fp = fopen(path, "a");
 
     for(i = 0; i < appendableText.nLine; i++) {
+        strContainsAlpha = 0;
+
         for(j = 0; appendableText.ptrs[i][j] != '\n' && appendableText.ptrs[i][j] != '\0'; j++) {
             buff[j] = appendableText.ptrs[i][j];
+
+            if(isalpha(buff[j]))
+                strContainsAlpha = 1;
         }
 
         buff[j] = '\n';
         buff[j + 1] = '\0';
 
-        if(buff[0] != '\n')
+        if(strContainsAlpha)
             fputs(buff, fp);
     }
 
