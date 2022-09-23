@@ -150,7 +150,7 @@ int compStart(const char* str1, const char* str2) {
     const char *ptr1 = *(char**)str1;
     const char *ptr2 = *(char**)str2;
 
-    char c1, c2;
+    char c1 = 7, c2 = 7;
 
     while(*ptr1 != '\0' && *ptr1 != '\n' && !isalpha(*ptr1))
         ptr1++;
